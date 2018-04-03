@@ -1,5 +1,9 @@
-from flask import Flask, Blueprint, session, redirect, render_template, request, views
+# -*- coding:utf-8 -*-
+
 import datetime, json
+
+from flask import Flask, Blueprint, session, redirect, render_template, request, views
+
 from .. import db
 from .. import models
 

@@ -1,9 +1,12 @@
+# -*- coding:utf-8 -*-
+
 from wtforms.form import Form
 from wtforms.fields import simple
 from wtforms import validators
 from wtforms import widgets
-from . import db
-from . import models
+
+
+
 
 class LoginForm(Form):
    name = simple.StringField(

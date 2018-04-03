@@ -1,4 +1,3 @@
-from flask import Flask
 
 
 from conference import create_app
