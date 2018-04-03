@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>会议室预定</title>
-    <script src="/static/jquery-3.2.1.min.js"></script>
-    <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
-    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
-
-    <link rel="stylesheet" href="/static/datetime/bootstrap-datetimepicker.min.css">
-    <script src="/static/datetime/bootstrap-datetimepicker.min.js"></script>
+    <script src="{{ url_for('static',filename='jquery-3.2.1.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='bootstrap-3.3.7-dist/js/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static',filename='bootstrap-3.3.7-dist/css/bootstrap.css') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='datetime/bootstrap-datetimepicker.min.css' }}">
+    <script src="{{ url_for('static',filename='datetime/bootstrap-datetimepicker.min.js' }}"></script>
 
 </head>
 <body>
