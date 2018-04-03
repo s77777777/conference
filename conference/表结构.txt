@@ -1,0 +1,66 @@
+3. 分组实现：会议室预定（Flask)
+	- 设计表【必须】
+	- 基于蓝图，基于before_request是如实现用的登录。【必须】
+	
+
+数据库名：conference
+root   123	
+
+用户表						
+create table userinfo(id int primary key auto_increment,
+						name char(32) unique,
+						password char(32),
+						phone char(11));
+				
+insert into userinfo(name,password,phone) values('alex','123',12345678912);
+insert into userinfo(name,password,phone) values('egon','123',12345678912);
+insert into userinfo(name,password,phone) values('jing','123',12345678912);
+insert into userinfo(name,password,phone) values('yuan','123',12345678912);
+insert into userinfo(name,password,phone) values('wu','123',12345678912);
+				
+会议室表
+create table homes( id int primary key auto_increment,
+					name char(32)
+	); 
+	
+insert into homes(name) values('1号房间');
+insert into homes(name) values('2号房间');
+insert into homes(name) values('3号房间');
+insert into homes(name) values('4号房间');
+insert into homes(name) values('5号房间');
+insert into homes(name) values('6号房间');
+	
+时间表
+create table conference_time(
+	id int primary key auto_increment,
+	start_time time,
+	end_time time);
+
+insert into conference_time(start_time,end_time) values('08:30:00','09:00:00');	
+insert into conference_time(start_time,end_time) values('09:00:00','09:30:00');	
+insert into conference_time(start_time,end_time) values('09:30:00','10:00:00');	
+insert into conference_time(start_time,end_time) values('10:00:00','10:30:00');	
+insert into conference_time(start_time,end_time) values('10:30:00','11:00:00');	
+insert into conference_time(start_time,end_time) values('11:00:00','11:30:00');	
+insert into conference_time(start_time,end_time) values('11:30:00','12:00:00');	
+
+insert into conference_time(start_time,end_time) values('13:30:00','14:00:00');	
+insert into conference_time(start_time,end_time) values('14:00:00','14:30:00');	
+insert into conference_time(start_time,end_time) values('14:30:00','15:00:00');	
+insert into conference_time(start_time,end_time) values('15:00:00','15:30:00');	
+insert into conference_time(start_time,end_time) values('15:30:00','16:00:00');	
+insert into conference_time(start_time,end_time) values('16:00:00','16:30:00');	
+insert into conference_time(start_time,end_time) values('16:30:00','17:00:00');	
+	
+会议室预订记录表
+create table record(
+				id int primary key auto_increment,
+				conference_date date,		
+				homes_id int,
+				user_id int,
+				conference_time_id int,
+				foreign key(homes_id) references homes(id),
+				foreign key(user_id) references userinfo(id),
+				foreign key(conference_time_id) references conference_time(id),
+				unique(homes_id,conference_date,conference_time_id)
+);

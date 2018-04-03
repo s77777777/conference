@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/static/jquery-3.2.1.min.js"></script>
+    <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+    {#    <script src="/static/moment-develop/moment.js"></script>#}
+    {#    <script src="/static/Moment.js"></script>#}
+    {#    <link href="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css"#}
+    {#          rel="stylesheet">#}
+    {#    <script src="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>#}
+
+</head>
+<body>
+<div class="container-fluid">
+    <h2>会议室预订</h2>
+
+    <input id='date' type="date" ctime="{{ ctime }}" class="pull-right">
+    <button id='submit' class="btn btn-primary pull-right">确认预订</button>
+    <span class="btn btn-primary disabled pull-right"> 当前用户:{{ current_user }}</span>
+    <span id="error_msg"></span>
+
+    <table class="table table-bordered  table-hover " record_list="{{ record_list }}">
+        <thead>
+        <tr>
+            <th>房间号</th>
+            {% for time in time_list %}
+                <td>{{ time.start_time }}-{{ time.end_time }}</td>
+            {% endfor %}
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for home in homes_list %}
+            <tr>
+                <td>{{ home.name }}</td>
+                {% for time in time_list %}
+                    <td>
+                        {% if (home.id,time.id) in  record_dict %}
+                            <button conference_time_id={{ time.id }} homes_id={{ home.id }} class="btn btn-success disabled" style="width:75%;height:100%">已被预订
+                            </button>
+                            {% if record_dict[(home.id,time.id)].user_id == current_user_id %}
+                                <span class="glyphicon glyphicon-remove del" record_id="{{ record_dict[(home.id,time.id)].record_id }}" style="width:20%"></span>
+                            {% endif %}
+                        {% else %}
+                            <button conference_time_id={{ time.id }} homes_id={{ home.id }} class="btn btn-default" style="width:100%;height:100%">预订
+                            </button>
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</body>
+<script>
+    $(document).ready(function () {
+        // 将日期input修改为之前选定的日期
+        var ctime = $('#date').attr('ctime');
+        $('#date').val(ctime);
+
+        // 为按钮做事件委托，点击变样式
+        $('tbody').on('click', 'button', function () {
+            $(this).toggleClass('btn-primary')
+        });
+
+        // 点击确认按钮
+        $('#submit').click(function () {
+            var data_list = [];
+            var conference_date = $('#date').val();
+
+            $('tbody button[class="btn btn-default btn-primary"]').each(function () {
+                var conference_time_id = $(this).attr('conference_time_id');
+                var homes_id = $(this).attr('homes_id');
+                data_list.push({
+                    'homes_id': homes_id,
+                    'conference_time_id': conference_time_id,
+                    'conference_date': conference_date
+                })
+            });
+
+            // 如果有被选中的数据,则发送请求
+            if (data_list.length > 0) {
+                $.ajax({
+                    url: '/conference',
+                    type: 'post',
+                    data: {'data_list': JSON.stringify(data_list)},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.status) {
+                            location.href = ''
+                        } else {
+                            $('#error_msg').text(data.msg)
+                        }
+                    }
+                })
+            }
+        });
+
+        // 点击取消
+        $('.del').click(function () {
+            var record_id = $(this).attr('record_id');
+            $.ajax({
+                url: '/conference',
+                type: 'delete',
+                data: {'record_id':record_id},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.status) {
+                        location.href = ''
+                    } else {
+                        $('#error_msg').text(data.msg)
+                    }
+                }
+            })
+        });
+
+
+        // 为日期绑定change 事件
+        $('#date').change(function () {
+            var conference_date = $('#date').val();
+            location.href = '/conference?date=' + conference_date
+        });
+    })
+
+</script>
+
+
+</html>
