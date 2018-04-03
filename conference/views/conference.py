@@ -96,7 +96,7 @@ class Conference(views.MethodView):
         return json.dumps(ret)
 
 
-blue_conference.add_url_rule('/conference', view_func=Conference.as_view(name='conference'),endpoint="index")
+blue_conference.add_url_rule('/conference', view_func=Conference.as_view(name='conference'),endpoint="conference")
 
 
 @blue_conference.before_request

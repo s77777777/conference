@@ -23,7 +23,7 @@ def login():
             if res:
                 session['user_info'] = res.name,
                 session['user_id'] = res.id
-                return redirect(url_for("index"))
+                return redirect(url_for("conference"))
             else:
                 error_msg = '账户或密码错误'
 
