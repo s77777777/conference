@@ -2,22 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>会议预订</title>
     <script src="/static/jquery-3.2.1.min.js"></script>
     <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
     <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
-    {#    <script src="/static/moment-develop/moment.js"></script>#}
-    {#    <script src="/static/Moment.js"></script>#}
-    {#    <link href="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css"#}
-    {#          rel="stylesheet">#}
-    {#    <script src="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>#}
+
+    <link rel="stylesheet" href="/static/datetime/bootstrap-datetimepicker.min.css">
+    <script src="/static/datetime/bootstrap-datetimepicker.min.js"></script>
 
 </head>
 <body>
 <div class="container-fluid">
     <h2>会议室预订</h2>
 
-    <input id='date' type="date" ctime="{{ ctime }}" class="pull-right">
+    {#    <input id='date' type="date" ctime="{{ ctime }}" class="pull-right">#}
+
+    <!--日期选择器开始-->
+    <form class="form-inline" method="post" action="">
+        <div class="form-group">
+            <div class="input-group input-append date form_datetime">
+                <input class="form-control date" id="date" size="14" type="text" value disabled readonly name="date"
+                       ctime="{{ ctime }}">
+                <span class="add-on"><i class="icon-th"></i></span>
+                <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-th"></span>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!--日期选择器结束-->
+
+
     <button id='submit' class="btn btn-primary pull-right">确认预订</button>
     <span class="btn btn-primary disabled pull-right"> 当前用户:{{ current_user }}</span>
     <span id="error_msg"></span>
@@ -39,13 +54,17 @@
                 {% for time in time_list %}
                     <td>
                         {% if (home.id,time.id) in  record_dict %}
-                            <button conference_time_id={{ time.id }} homes_id={{ home.id }} class="btn btn-success disabled" style="width:75%;height:100%">已被预订
+                            <button conference_time_id={{ time.id }} homes_id={{ home.id }}
+                                    class="btn btn-success disabled" style="width:75%;height:100%">已被预订
                             </button>
                             {% if record_dict[(home.id,time.id)].user_id == current_user_id %}
-                                <span class="glyphicon glyphicon-remove del" record_id="{{ record_dict[(home.id,time.id)].record_id }}" style="width:20%"></span>
+                                <span class="glyphicon glyphicon-remove del"
+                                      record_id="{{ record_dict[(home.id,time.id)].record_id }}"
+                                      style="width:20%"></span>
                             {% endif %}
                         {% else %}
-                            <button conference_time_id={{ time.id }} homes_id={{ home.id }} class="btn btn-default" style="width:100%;height:100%">预订
+                            <button conference_time_id={{ time.id }} homes_id={{ home.id }} class="btn btn-default"
+                                    style="width:100%;height:100%">预订
                             </button>
                         {% endif %}
                     </td>
@@ -58,10 +77,32 @@
 
 </body>
 <script>
+    //日期插件
+    $(".form_datetime").datetimepicker({
+        format: 'yyyy/mm/dd',//显示格式
+        todayHighlight: 1,//今天高亮
+        minView: "month",//设置只显示到月份
+//        startView: 2, // 日期时间选择器打开之后首先显示的视图
+        {#startDate:new Date(),#}
+        forceParse: 0,
+        showMeridian: 1,
+        autoclose: 1//选择后自动关闭
+    });
+
+    // 为日期绑定change 事件
+    $('#date').change(function () {
+        var conference_date = $('#date').val();
+        location.href = '/conference?date=' + conference_date
+    });
+
+    // 将日期input修改为之前选定的日期
+    var ctime = $('#date').attr('ctime');
+    $('#date').val(ctime);
+
+</script>
+
+<script>
     $(document).ready(function () {
-        // 将日期input修改为之前选定的日期
-        var ctime = $('#date').attr('ctime');
-        $('#date').val(ctime);
 
         // 为按钮做事件委托，点击变样式
         $('tbody').on('click', 'button', function () {
@@ -70,8 +111,10 @@
 
         // 点击确认按钮
         $('#submit').click(function () {
+            //获取日期
             var data_list = [];
-            var conference_date = $('#date').val();
+            var reg = /\//g;
+            var conference_date = $('#date').val().replace(reg, '-');
 
             $('tbody button[class="btn btn-default btn-primary"]').each(function () {
                 var conference_time_id = $(this).attr('conference_time_id');
@@ -107,7 +150,7 @@
             $.ajax({
                 url: '/conference',
                 type: 'delete',
-                data: {'record_id':record_id},
+                data: {'record_id': record_id},
                 success: function (data) {
                     data = JSON.parse(data);
                     if (data.status) {
@@ -117,13 +160,6 @@
                     }
                 }
             })
-        });
-
-
-        // 为日期绑定change 事件
-        $('#date').change(function () {
-            var conference_date = $('#date').val();
-            location.href = '/conference?date=' + conference_date
         });
     })
 
