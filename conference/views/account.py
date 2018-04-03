@@ -1,6 +1,6 @@
-# -*- coding:utf-8 -*-
 
-from flask import Blueprint, request, render_template, session, redirect
+from flask import Blueprint, request, render_template, session, redirect,url_for
+
 
 
 from .. import db
@@ -10,7 +10,7 @@ from .. import forms
 blue_account = Blueprint('blue_user', __name__, template_folder='templates')
 
 
-@blue_account.route('/login', methods=['GET', 'POST'])
+@blue_account.route('/login', methods=['GET', 'POST'],endpoint="login")
 def login():
     if request.method == 'GET':
         form = forms.LoginForm()
@@ -25,7 +25,7 @@ def login():
             if res:
                 session['user_info'] = res.name,
                 session['user_id'] = res.id
-                return redirect('/conference')
+                return redirect(url_for("conference"))
             else:
                 error_msg = '账户或密码错误'
 

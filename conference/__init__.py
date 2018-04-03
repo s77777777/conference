@@ -13,7 +13,7 @@ from conference.views.account import blue_account
 def create_app():
     app = Flask(__name__)
     app.secret_key = 'sss'
-    app.debug = True
+    app.debug = False
     app.config.from_object('settings.DevelopmentConfig')
 
     db.init_app(app)
