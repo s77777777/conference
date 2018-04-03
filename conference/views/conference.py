@@ -58,7 +58,7 @@ class Conference(views.MethodView):
 
             # 添加数据
 
-            record_list = [models.Record(**data, user_id=user_id) for data in data_list]
+            record_list = [models.Record(**data,user_id=user_id) for data in data_list]
             db.session.add_all(record_list)
             db.session.commit()
             db.session.close()
