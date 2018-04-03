@@ -101,9 +101,9 @@
         <option value="$PROJECT_DIR$/conference/models.py" />
         <option value="$PROJECT_DIR$/run.py" />
         <option value="$PROJECT_DIR$/requirements.txt" />
-        <option value="$PROJECT_DIR$/conference/views/conference.py" />
         <option value="$PROJECT_DIR$/conference/templates/book.html" />
         <option value="$PROJECT_DIR$/conference/templates/login.html" />
+        <option value="$PROJECT_DIR$/conference/views/conference.py" />
       </list>
     </option>
   </component>
