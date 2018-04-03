@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, session, redirect, render_template, request, views
+from flask import Flask, Blueprint, session, redirect, render_template, request, views,url_for
 import datetime, json
 from .. import db
 from .. import models
@@ -96,7 +96,7 @@ class Conference(views.MethodView):
         return json.dumps(ret)
 
 
-blue_conference.add_url_rule('/conference', view_func=Conference.as_view(name='conference'))
+blue_conference.add_url_rule('/conference', view_func=Conference.as_view(name='conference'),endpoint="index")
 
 
 @blue_conference.before_request
@@ -104,4 +104,5 @@ def is_login(*args, **kwargs):
     user = session.get('user_info')
     if user:
         return None
-    return redirect('/login')
+    url = url_for("login")
+    return redirect(url)
